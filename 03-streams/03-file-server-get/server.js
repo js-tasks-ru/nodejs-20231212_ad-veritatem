@@ -1,6 +1,8 @@
+/* eslint-disable no-trailing-spaces */
 const url = require('url');
 const http = require('http');
 const path = require('path');
+const fs = require('node:fs');
 
 const server = new http.Server();
 
@@ -12,7 +14,20 @@ server.on('request', (req, res) => {
 
   switch (req.method) {
     case 'GET':
+      if (pathname.includes('/')) {
+        res.statusCode = 400;
+        res.end('Nested path is not allowed');
+        return;
+      }
 
+      const stream = fs.createReadStream(filepath);
+      
+      stream.pipe(res);
+      req.on('abort', () => req.destroy());
+      stream.on('error', () => {
+        res.statusCode = 404;
+        res.end('No such file');
+      });
       break;
 
     default:
