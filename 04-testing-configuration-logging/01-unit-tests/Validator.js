@@ -12,6 +12,21 @@ module.exports = class Validator {
       const value = obj[field];
       const type = typeof value;
 
+      if (!rules.type) {
+        errors.push({field, error: 'input type should be specified'});
+        return errors;
+      }
+
+      if (!rules.min) {
+        errors.push({field, error: 'min value should be specified'});
+        return errors;
+      }
+
+      if (!rules.max) {
+        errors.push({field, error: 'max value should be specified'});
+        return errors;
+      }
+
       if (type !== rules.type) {
         errors.push({field, error: `expect ${rules.type}, got ${type}`});
         return errors;

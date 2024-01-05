@@ -7,15 +7,15 @@ app.use(require('koa-bodyparser')());
 
 const Router = require('koa-router');
 const router = new Router();
-
-const clients = new Set();
+const subscribers = new Set();
+// let subscribers = new Map();
 
 router.get('/subscribe', async (ctx, next) => {
-  const message = await new Promise((resolve, reject) => {
-    clients.add(resolve);
+  const message = await new Promise((resolve) => {
+    subscribers.add(resolve);
 
-    ctx.res.on('close', function() {
-      clients.delete(resolve);
+    ctx.res.on('close', () => {
+      subscribers.delete(resolve);
       resolve();
     });
   });
@@ -27,15 +27,11 @@ router.post('/publish', async (ctx, next) => {
   const message = ctx.request.body.message;
 
   if (!message) {
-    ctx.throw(400, 'required field `message` is missing');
+    ctx.throw(400, 'Message field is missing.');
   }
 
-  clients.forEach(function(resolve) {
-    resolve(message);
-  });
-
-  clients.clear();
-
+  subscribers.forEach((resolve) => resolve(message));
+  subscribers.clear();
   ctx.body = 'ok';
 });
 
