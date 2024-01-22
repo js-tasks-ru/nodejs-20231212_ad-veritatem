@@ -4,18 +4,17 @@ const User = require('../../models/User');
 module.exports = new LocalStrategy(
     {usernameField: 'email', session: false},
     async function(email, password, done) {
-      const user = User.findOne({email});
+      const user = await User.findOne({email});
 
       if (!user) {
         done(null, false, 'Нет такого пользователя');
       }
-      console.log(user);
-      const passwordHash = await user.schema.methods.checkPasswor(password);
+      const passwordHash = await user.checkPassword(password);
 
       if (!passwordHash) {
-        done(null, false, 'Нет такого пользователя');
+        done(null, false, 'Неверный пароль');
       }
 
-      done(user, false, 'User');
+      done(false, user, 'User');
     },
 );
