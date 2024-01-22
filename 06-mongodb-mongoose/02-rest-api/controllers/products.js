@@ -7,8 +7,8 @@ module.exports.productsBySubcategory = async function productsBySubcategory(ctx,
 
   if (!subcategory) return next();
 
-  const products = await producModel.find({subcategory});
-  // const products = res.map((item) => mapProduct(item));
+  const res = await producModel.find({subcategory});
+  const products = res.map((item) => mapProduct(item));
 
 
   if (!products.length) {
