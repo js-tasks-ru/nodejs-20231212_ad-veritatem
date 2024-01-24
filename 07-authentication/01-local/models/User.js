@@ -63,7 +63,7 @@ userSchema.methods.setPassword = async function setPassword(password) {
 
 userSchema.methods.checkPassword = async function(password) {
   if (!password) return false;
-
+  console.log('checkPassword', {all: this, salt: this.salt});
   const hash = await generatePassword(this.salt, password);
   return hash === this.passwordHash;
 };
