@@ -1,3 +1,10 @@
+const dotenv = require('dotenv');
+const path = require('node:path');
+
+dotenv.config({
+  path: path.join(__dirname, './', '.env'),
+});
+
 module.exports = {
   mongodb: {
     uri: (process.env.NODE_ENV === 'test') ?
