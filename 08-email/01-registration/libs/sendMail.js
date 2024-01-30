@@ -52,7 +52,7 @@ module.exports = async function sendMail(options) {
     },
     subject: options.subject,
   };
-  console.log('sendMail', {html, message});
+
   return await transport.sendMail(message);
 };
 
