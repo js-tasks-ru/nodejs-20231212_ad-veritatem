@@ -2,6 +2,7 @@ const Koa = require('koa');
 const {v4: uuid} = require('uuid');
 const Router = require('koa-router');
 const handleMongooseValidationError = require('./libs/validationErrors');
+const checkUserMiddleware = require('./libs/checkUserMiddleware');
 const mustBeAuthenticated = require('./libs/mustBeAuthenticated');
 const {productsBySubcategory, productList, productById} = require('./controllers/products');
 const {categoryList} = require('./controllers/categories');
@@ -76,8 +77,8 @@ router.get('/me', mustBeAuthenticated, me);
 router.post('/register', handleMongooseValidationError, register);
 router.post('/confirm', confirm);
 
-router.get('/orders', getOrdersList);
-router.post('/orders', checkout);
+router.get('/orders', handleMongooseValidationError, checkUserMiddleware, getOrdersList);
+router.post('/orders', handleMongooseValidationError, checkUserMiddleware, checkout);
 
 app.use(router.routes());
 
